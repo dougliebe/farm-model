@@ -1,8 +1,8 @@
-setwd("C:/Users/Doug/Documents/PhD Papers/Farm Models")
+# setwd("C:/Users/Doug/Documents/PhD Papers/Farm Models/farm-model")
 
 #####################  FOR LOOP #######################
 #Edit source of dairy file
-source('FSMod/R/Broiler.R')
+source('R/Broiler.R')
 
 #Write an array
 val <- array(1, dim = c(10, length(seq(iDay,fDay, by = 1))))
