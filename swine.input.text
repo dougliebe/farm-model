@@ -1,0 +1,26 @@
+####### SWINE ###########
+animal <- 'swine'
+
+#Starting Numbers of Animals
+iPiglet <- 100
+iSow <- 100
+iBoar <- 100
+
+fDay <- 365 #Length of simulation
+
+###############################################
+# Feed Characteristics
+
+## Piglet Diet
+
+
+## Sow Diet
+
+
+## Boar Diet
+
+
+###############################################
+# Weather
+
+Temp <- 25 #degrees C

@@ -1,0 +1,32 @@
+####### LAYERS ###########
+animal <- 'layer'
+
+#Starting Numbers of Animals
+iPullets.brown <- 100
+iLaying.hens.brown <- 0
+iBreed.hens.brown <- 0
+iMolt.hens.brown <- 0
+iPullets.white <- 0
+iLaying.hens.white <- 0
+iBreed.hens.white <- 0
+iMolt.hens.white <- 0
+
+day_since_new_pullets <- 0 #Start at 0 if pullets come in on day 1
+Pmolt <- 0.4
+fDay <- 3000 #Length of simulation
+
+###############################################
+# Feed Characteristics
+
+## Chick Diet
+
+
+## Mature Diet
+CP.white = 16.5
+CP.brown = 17.0
+
+
+###############################################
+# Weather
+
+Temp <- 25 #degrees C

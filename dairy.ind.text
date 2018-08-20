@@ -1,0 +1,47 @@
+##### DAIRY #######
+animal <- 'dairy'
+
+# Start a day count
+fDay <- 3000 #Length of Simulation
+
+# Animal Characteristics
+BI <- 1 #if Holsteins 1, else 0
+PKYD <- 43 #peak milk yield, kg/d
+MW <- 600 #mature weight in kg
+kPreg <- 90 # % of animals that become pregnant each lactation
+MilkFat <- 3.5 #average MF% of herd
+MilkProtein <- 3.5 #average Protein% of herd
+FCM <- 3
+
+cullStrat <- 1 #1 = cull for cECM; 2 = cull for age; 3 = PAR
+days_attempt_preg <- 280 # number of days into lactation before stop trying to get preg
+markFreq <- 60 #How often to mark cows to be culled
+rateFemale <- 50 # rate of female calves %
+
+############################################
+# Feed Characteristics
+
+
+# Calf Feeding
+calf_ME <- 5 #calf ME of diet
+calf_CP <- 1 #CP, %
+
+#Yearling Feed
+heifer_ME <- 5 #yearling ME of diet
+heifer_CP <- 2.5 #CP, %
+
+#Lactating Cow Feed
+lact_CP <- 10 #CP, %
+
+#Dry Cow Diet
+dry_CP <- 10 #CP, %
+
+
+############################################
+# Environmental Conditions
+HRS <- 12 #Hours perceived sunlight
+
+# Perceived Temeprature
+Temp <- 24 #Indoor temp, C
+RH <- 75 #Relative Humidity, %
+WS <- 1 #Average wind speed, kph

@@ -1,0 +1,28 @@
+###### BROILERS #######
+animal <- 'broiler'
+
+# Start a day count
+fDay <- 43*8 #Length of Simulation
+
+# Set chick numbers
+iChicks <- 25000
+kMortality <- 5 #Mortality, % over cycle
+
+switch_feed <- 22 #Age at which diet is switched
+
+############################################
+# Feed Characteristics
+ME_young <- 3050 #Energy of diet, kcal / kg
+ME_mature <- 3180 
+
+CPy <- 21.5 #Crude protein for growing, %
+CPo <- 19 #Crude protein for finishing, %
+
+nP_young <- 0.25 #non-phytate P in diet for growing, %
+nP_mature <- 0.25 #non-phytate P in diet for finishing, %
+
+P_young <- 500 #added Phytate in diet for growing, U/kg diet
+P_mature <- 500 #added Phytate in diet for finishing, U/kg diet
+############################################
+# Weather
+Temp <- 31 #Degrees, C

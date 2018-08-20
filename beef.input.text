@@ -1,0 +1,88 @@
+######## BEEF ##############
+animal <- 'beef'
+
+# Start a day count
+fDay <- 1000 #Length of Simulation
+
+# Rate Parameters
+male.birth.rate <- 0.5
+breedstock.rate <- 0.20 # percentage of calves that go to breedstock
+
+kCow.birth <- 1/365
+kCow.bred <- 1/365
+kCow.dry <- 0
+kCow.slaughter <- 0.20
+
+kProd.bull.grow <- 0
+kProd.cow.grow <- 0
+kProd.bull.finish <- 0
+kProd.cow.finish <- 0
+kProd.slaughter <- 0  #same for bull & cow
+
+kBreed.cow.grow <- 0
+kBreed.bull.grow <- 0
+kBreed.cow.mature <- 0
+kBreed.bull.mature <- 0
+kBreed.bull.slaughter <- 0
+
+# Starting Cow Numbers
+
+iCow.bred <- 0
+iCow.dry <- 0
+iCow.lact <- 0
+
+iProd.bull.calf <- 0
+iProd.cow.calf <- 0
+iProd.steer.grow <- 0
+iProd.cow.grow <- 0
+
+iBreed.cow.calf <- 0
+iBreed.bull.calf <- 0
+iBreed.cow.grow <- 0
+iBreed.bull.grow <- 0
+iBreed.bull.mature <- 0
+
+## Breed ID (1 if TRUE)
+
+Angus <- 1
+Holstein <- 0
+Holstein.x.Angus <- 0
+
+## Conditioning Score
+CS <- 5
+
+## Weight at Maturity (kg)
+
+calf.initial.wt <- 100 #calf birth weight, kg
+calf.max.wt <- 100 #calf max weight before switching, kg
+
+steer.initial.wt <- 100 #steer initial weight, kg
+cow.initial.wt <- 100 #cow initial weight, kg 
+
+steer.max.wt <- 500
+cow.max.wt <- 400
+lact.cow.wt <- 400
+breed.bull.wt <- 600
+
+## Diet Characteristics
+
+
+# Calf Feeding
+calf_DOF <- 100 #Days on feed, d
+calf_CP <- 10 #CP, %
+
+#Yearling Feed
+breed_DOF <- 100 #Days on feed, d
+heifer_CP <- 10 #CP, %
+
+#Lactating Cow Feed
+lact_CP <- 10 #CP, %
+
+#Dry Cow Diet
+dry_CP <- 10 #CP, %
+
+## Climate Vars
+
+Temp <- 22 #degrees C
+RH <- 80 #percent
+WS <- 2 #wind speed m/s

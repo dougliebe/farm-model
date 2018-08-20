@@ -1,0 +1,55 @@
+##### DAIRY #######
+animal <- 'dairy'
+
+# Start a day count
+fDay <- 1000 #Length of Simulation
+
+# Set starting animal numbers
+iCalf <- 0
+iHeifer.first.lact <- 0
+iHeifer.second.lact <- 0
+iHeifer.third.lact <- 0
+iHeifer.first.dry <- 0
+iHeifer.second.dry <- 0
+iHeifer.third.dry <- 0
+iLact <- 100
+iDry <- 0
+
+# Animal Characteristics
+kCull <- 80 #rate of cows leaving milking herd, %
+kMortality <- 5 #rate of cows lost to disease, etc., %
+BI <- 1 #if Holsteins 1, else 0
+PKYD <- 43 #peak milk yield, kg/d
+MW <- 600 #mature weight in kg
+kPreg <- 40
+MilkFat <- 3.5 #average MF% of herd
+MilkProtein <- 3.5 #average Protein% of herd
+FCM <- 3 #Fat corrected milk, %
+
+############################################
+# Feed Characteristics
+
+
+# Calf Feeding
+calf_ME <- 5 #calf ME of diet
+calf_CP <- 1 #CP, %
+
+#Yearling Feed
+heifer_ME <- 5 #yearling ME of diet
+heifer_CP <- 2.5 #CP, %
+
+#Lactating Cow Feed
+lact_CP <- 10 #CP, %
+
+#Dry Cow Diet
+dry_CP <- 10 #CP, %
+
+
+############################################
+# Environmental Conditions
+HRS <- 12 #Hours perceived sunlight
+
+# Perceived Temeprature
+Temp <- 24 #Indoor temp, C
+RH <- 75 #Relative Humidity, %
+WS <- 1 #Average wind speed, kph
