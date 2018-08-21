@@ -36,7 +36,7 @@ wtBroilers <- 0
 wtChicks <- 0
 
 # Read input file
-source('broiler.input.text')
+source('inputFiles/broiler.input.text')
 
 
 kMortality <- 7 #as whole number %

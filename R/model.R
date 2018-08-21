@@ -27,7 +27,8 @@ while(nDay <= fDay) {
     Pexc <- broiler_P_excretion(ADG)
     Nmin <- broiler_N_mineralization(Nexc, Nvol) # in kilograms
     Norg <- (Nexc-Nvol)-Nmin # in kilograms
-    Pmin <- broiler_P_excretion(Pexc) # in kilograms
+    Pmin <- broiler_P_mineralization(Pexc) # in kilograms
+    Porg <- Pexc - Pmin
 
 
 
@@ -184,9 +185,9 @@ while(nDay <= fDay) {
   # val[2,nDay] <- nHeifer.first.lact
   # val[3,nDay] <- nLact
   # val[4,nDay] <- nLaying.hens.brown+nPullets.brown+nMolt.hens.brown
-  val[5,nDay] <- t
+  val[5,nDay] <- Porg
   # val[6,nDay] <- total.drypen
-  val[7,nDay] <- Meat
+  val[7,nDay] <- Norg
   val[8,nDay] <- Pmin
   val[9,nDay] <- Nmin
   # val[10,nDay] <- P
@@ -200,12 +201,11 @@ par(mfrow = c(1,4))
 # plot(val[1,], main = 'calves', xlab = 'Day', ylab = 'Count')
 # plot(val[2,], main = 'steer.grow', xlab = 'Day', ylab = 'Count')
 # plot(val[3,], main = 'steer.finish', xlab = 'Day', ylab = 'Count')
-plot(val[4,], main = 'Broilers', xlab = 'Day', ylab = 'Count')
-plot(val[5,], main = "Chicks", xlab = 'Day', ylab = 'Count')
-plot(val[9,], main = "N", xlab = 'Day', ylab = 'Count')
-lines(val[8,])
-# plot(val[7,], main = 'Meat', xlab = 'Day', ylab = 'Count')
-plot(val[8,], main = 'Lact Cows', xlab = 'Day', ylab = 'Count')
+# plot(val[4,], main = 'Broilers', xlab = 'Day', ylab = 'Count')
+plot(val[5,], main = "Organic P", xlab = 'Day', ylab = 'kg')
+plot(val[9,], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
+plot(val[7,], main = 'Organic N', xlab = 'Day', ylab = 'kg')
+plot(val[8,], main = 'Mineralized P', xlab = 'Day', ylab = 'kg')
 # plot(val[5,], main = 'Dry Cows', xlab = 'Day', ylab = 'Count')
 
 # plot(val[10,], main = "P Excretion", xlab = 'Day', ylab = 'Wt, kg')
