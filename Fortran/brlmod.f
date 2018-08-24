@@ -84,9 +84,9 @@ C       real outputs(45)
             ADG = brlADG()
             intake = brlDMI(ADG)
             Nexc = brlNex()
-            call brlN(Nexc, Nvol, Nmin)
+            call brlN(Nexc, Norg, Nmin)
             Pexc = brlPex()
-            call brlP(Pexc,Pvol, Pmin)
+            call brlP(Pexc,Porg, Pmin)
 
             !update animal numbers
             if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality)
@@ -153,10 +153,11 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
             return ! Returns N in kg
       end function brlNex
 
-      subroutine brlN(Nexc, Nvol, Nmin)
+      subroutine brlN(Nexc, Norg, Nmin)
             real, intent(in) :: Nexc
-            real, intent(out) :: Nvol, Nmin
+            real, intent(out) :: Nvol, Nmin, Norg
             Nvol = ((0.362+0.116+0.002)*Nexc)
+            Norg = (Nexc-Nvol)-Nmin
             Nmin = ((Nexc-Nvol)*0.49)
       end subroutine brlN
 
@@ -179,11 +180,11 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       end function brlPex
       
       !Eghball 2002
-      subroutine brlP(Pexc, Pvol, Pmin)
+      subroutine brlP(Pexc, Porg, Pmin)
             real, intent(in) :: Pexc
-            real, intent(out) :: Pvol, Pmin
-            Pvol = (0.9*Pexc)
-            Pmin = ((Pexc-Pvol))
+            real, intent(out) :: Porg, Pmin
+            Pmin = (0.9*Pexc)
+            Porg = ((Pexc-Pmin))
       end subroutine brlP      
 
       end program broiler
