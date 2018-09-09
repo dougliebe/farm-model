@@ -5,6 +5,7 @@ C     this subroutine computes the lake hydrologic pesticide balance.
 C     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
 C     variable          |definition
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+C     nDay              | day in cycle (1-full cycle)
 C     nChicks           | number of chicks, less than 1/2 of life
 C     nBroilers         | number of birds, older than 1/2 of life
 C     wtChicks          | weight of chicks
@@ -27,6 +28,7 @@ C     nBroilers               | number of birds, older than 1/2 of life
 C     wtChicks                | weight of chicks
 C     wtBroilers              | weight of mature birds
 C     intake                  | feed intake, total kg
+C     manure                  | manure output, total kg
 C     Nexc                    | Total N excretion, kg
 C     Pexc                    | Total P excretion, kg
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -48,8 +50,29 @@ C     Pinorg_frac - 90%       | inorganic P fraction of excreted P
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
+      real :: kMature
+      real :: kBirth
+      real :: kCull
+      real :: kMortality
+      real :: maturing 
+      real :: culling
+      real :: born
+      real :: Norg_frac
+      real :: Ninorg_frac
+      real :: Porg_frac
+      real :: Pinorg_frac
 
-
+      kMature = 1
+      kBirth = 1
+      kCull = 1
+      kMortality = 5
+      maturing = 0 
+      culling = 0
+      born = 0
+      Norg_frac = 0.265
+      Ninorg_frac = 0.255
+      Porg_frac = 0.10
+      Pinorg_frac = 0.90
 
       ! put ceiling on temp effects
       if(Temp .le. 23) Temp = 23
@@ -83,10 +106,11 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       wt_per_bird=(wtChicks+wtBroilers)/(nChicks+nBroilers)
       ADG = brlADG()
       intake = brlDMI(ADG)
-      Nexc = brlNex()
-      call brlN(Nexc, Norg, Nmin)
-      Pexc = brlPex()
-      call brlP(Pexc,Porg, Pmin)
+      manure = manure + (intake - ADG)
+C       Nexc = brlNex()
+C       call brlN(Nexc, Norg, Nmin)
+C       Pexc = brlPex()
+C       call brlP(Pexc,Porg, Pmin)
 
       !update animal numbers
       if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality)
@@ -95,7 +119,10 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       !wt updating
       meat_produced = culling*(wtBroilers)
 
-      
+      if (mod(nDay,(switch_feed*2)) .eq. 0) then
+            manure_out = manure
+      else
+            manure_out = 0
 
 C             if (nBroilers .gt. 0) wtBroilers=(wtBroilers+ADG*nBroilers)
 C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
@@ -133,59 +160,59 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       return
       end function brlDMI
 
-      function brlNex() result(Nexc)
-            implicit none
-            real :: Nexc, CP, FI, Nintake, Nret
-            if (nChicks .gt. 0) then
-                  CP = CPy
-            else 
-                  CP = CPo
-            end if
-            FI = brlDMI(ADG)
-            if (nBroilers .gt. 0) then
-                  Nintake = FI*1000 * nBroilers * (CP/100)/6.25
-                  Nret = 29 * (ADG*nBroilers) ! Constant 29 g/kg of BW gain according to ITAVI, 2013
-                  Nexc = (Nintake - Nret)/1000 ! Formula from Belloir et al. 2017
-            else 
-                  Nintake = FI * nChicks * (CP/100)/6.25 !N in kg
-                  Nexc = (0.589*Nintake*1000 - 5.004)/1000 !Bregendahl et al. 2002 using N, grams
-            end if      
-            return ! Returns N in kg
-      end function brlNex
+C       function brlNex() result(Nexc)
+C             implicit none
+C             real :: Nexc, CP, FI, Nintake, Nret
+C             if (nChicks .gt. 0) then
+C                   CP = CPy
+C             else 
+C                   CP = CPo
+C             end if
+C             FI = brlDMI(ADG)
+C             if (nBroilers .gt. 0) then
+C                   Nintake = FI*1000 * nBroilers * (CP/100)/6.25
+C                   Nret = 29 * (ADG*nBroilers) ! Constant 29 g/kg of BW gain according to ITAVI, 2013
+C                   Nexc = (Nintake - Nret)/1000 ! Formula from Belloir et al. 2017
+C             else 
+C                   Nintake = FI * nChicks * (CP/100)/6.25 !N in kg
+C                   Nexc = (0.589*Nintake*1000 - 5.004)/1000 !Bregendahl et al. 2002 using N, grams
+C             end if      
+C             return ! Returns N in kg
+C       end function brlNex
 
-      subroutine brlN(Nexc, Norg, Nmin)
-            real, intent(in) :: Nexc
-            real, intent(out) :: Nvol, Nmin, Norg
-            Nvol = ((0.362+0.116+0.002)*Nexc)
-            Norg = (Nexc-Nvol)-Nmin
-            Nmin = ((Nexc-Nvol)*0.49)
-      end subroutine brlN
+C       subroutine brlN(Nexc, Norg, Nmin)
+C             real, intent(in) :: Nexc
+C             real, intent(out) :: Nvol, Nmin, Norg
+C             Nvol = ((0.362+0.116+0.002)*Nexc)
+C             Norg = (Nexc-Nvol)-Nmin
+C             Nmin = ((Nexc-Nvol)*0.49)
+C       end subroutine brlN
 
-      function brlPex() result(Pexc)
-            real :: Pexc, FI, P, nP
-            if (nChicks .gt. 0) then
-                  P = P_young
-                  nP = nP_young
-            else 
-                  P = P_mature
-                  nP = nP_mature
-            end if
-            FI = brlDMI(ADG)
-            !Kornegay et al. 1996
-            Pexc = exp(1.058+(-0.2100*log(nP))+(-0.0160*log(P))+  
-     &           ((0.4088*log(nP))**2)+((-0.0087*log(P))**2)+
-     &           (0.0012*log(P)*log(nP)))
-            Pexc = FI*Pexc*(nBroilers + nChicks)/1000
-            return
-      end function brlPex
+C       function brlPex() result(Pexc)
+C             real :: Pexc, FI, P, nP
+C             if (nChicks .gt. 0) then
+C                   P = P_young
+C                   nP = nP_young
+C             else 
+C                   P = P_mature
+C                   nP = nP_mature
+C             end if
+C             FI = brlDMI(ADG)
+C             !Kornegay et al. 1996
+C             Pexc = exp(1.058+(-0.2100*log(nP))+(-0.0160*log(P))+  
+C      &           ((0.4088*log(nP))**2)+((-0.0087*log(P))**2)+
+C      &           (0.0012*log(P)*log(nP)))
+C             Pexc = FI*Pexc*(nBroilers + nChicks)/1000
+C             return
+C       end function brlPex
       
-      !Eghball 2002
-      subroutine brlP(Pexc, Porg, Pmin)
-            real, intent(in) :: Pexc
-            real, intent(out) :: Porg, Pmin
-            Pmin = (0.9*Pexc)
-            Porg = ((Pexc-Pmin))
-      end subroutine brlP      
+C       !Eghball 2002
+C       subroutine brlP(Pexc, Porg, Pmin)
+C             real, intent(in) :: Pexc
+C             real, intent(out) :: Porg, Pmin
+C             Pmin = (0.9*Pexc)
+C             Porg = ((Pexc-Pmin))
+C       end subroutine brlP      
 
 
       end
