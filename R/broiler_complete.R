@@ -2,11 +2,11 @@
 animal <- 'broiler'
 
 # Start a day count
-fDay <- 1000 #Length of Simulation
+fDay <- 43 #Length of Simulation
 iDay = 1
 nDay = iDay
 # Set chick numbers
-iChicks <- 25000
+iChicks <- 10
 
 kMortality <- 5 #Mortality, % over cycle
 
@@ -152,8 +152,8 @@ while (nDay <= fDay) {
   if(t==2) {wtChicks <- 0.025*nChicks} #reset new chicks
 
   # # Update values
-  # val[1,nDay] <- nCalf
-  # val[2,nDay] <- nHeifer.first.lact
+  val[nDay,1] <- Pexc
+  val[nDay,2] <- Nexc
   # val[3,nDay] <- nLact
   # val[4,nDay] <- nLaying.hens.brown+nPullets.brown+nMolt.hens.brown
   val[nDay,5] <- Porg
@@ -175,7 +175,7 @@ par(mfrow = c(1,4))
 # plot(val[2,], main = 'steer.grow', xlab = 'Day', ylab = 'Count')
 # plot(val[3,], main = 'steer.finish', xlab = 'Day', ylab = 'Count')
 # plot(val[4,], main = 'Broilers', xlab = 'Day', ylab = 'Count')
-plot(val[,5], main = "Organic P", xlab = 'Day', ylab = 'kg')
+plot(val[,1], main = "Organic P", xlab = 'Day', ylab = 'kg')
 plot(val[,9], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
 plot(val[,7], main = 'Organic N', xlab = 'Day', ylab = 'kg')
 plot(val[,8], main = 'Mineralized P', xlab = 'Day', ylab = 'kg')
