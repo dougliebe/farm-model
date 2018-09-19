@@ -29,8 +29,8 @@ C     wtChicks                | weight of chicks
 C     wtBroilers              | weight of mature birds
 C     intake                  | feed intake, total kg
 C     manure_out              | manure output, total kg
-C     N out                   | Total N excretion (min and org), kg
-C     P out                   | Total P excretion (min and org), kg
+C     N out                   | Total N excretion (min and org), as frac
+C     P out                   | Total P excretion (min and org), as frac 
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 C     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -126,10 +126,10 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
 
       if (mod(nDay,(switch_feed*2)) .eq. 0) then
             manure_out = manure
-            Pmin_out = Pmin_stored
-            Porg_out = Pmin_stored
-            Norg_out = Norg_stored
-            Nmin_out = Nmin_stored
+            Pmin_out = Pmin_stored/manure_out
+            Porg_out = Pmin_stored/manure_out
+            Norg_out = Norg_stored/manure_out
+            Nmin_out = Nmin_stored/manure_out
       else
             manure_out = 0
             Pmin_out = 0
