@@ -29,8 +29,10 @@ C     wtChicks                | weight of chicks
 C     wtBroilers              | weight of mature birds
 C     intake                  | feed intake, total kg
 C     manure_out              | manure output, total kg
-C     N out                   | Total N excretion (min and org), as frac
-C     P out                   | Total P excretion (min and org), as frac 
+C     Nmin_frac               | Mineralized N excretion, as frac
+C     Norg_frac               | Organic N excretion, as frac
+C     Pmin_frac               | Mineralized P excretion, as frac
+C     Porg_frac               | Organic P excretion, as frac
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 C     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
@@ -43,10 +45,10 @@ C     kMortality              | martality rate
 C     maturing                | how many birds maturing
 C     culling                 | how many culling
 C     born                    | how many born
-C     Norg                    | organic N of excreted N
-C     Nmin                    | mineralized N of excreted N
-C     Porg                    | organic P of excreted P
-C     Pmin                    | mineralized P of excreted P
+C     cumNorg                 | cumulative organic N of excreted N, kg
+C     cumNmin                 | cum. mineralized N of excreted N, kg
+C     cumPorg                 | cum. organic P of excreted P, kg
+C     cumPmin                 | cum. mineralized P of excreted P, kg
 C     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
@@ -69,10 +71,10 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       maturing = 0 
       culling = 0
       born = 0
-      Norg_stored = 0
-      Nmin_stored = 0
-      Porg_stored = 0
-      Pmin_stored = 0
+      cumNorg = 0
+      cumNmin = 0
+      cumPorg = 0
+      cumPmin = 0
 
       ! put ceiling on temp effects
       if(Temp .le. 23) Temp = 23
@@ -102,19 +104,21 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
             t = 0
       end if
 
-      ! calculations of outputs
+      ! calculations of weights 
       wt_per_bird=(wtChicks+wtBroilers)/(nChicks+nBroilers)
       ADG = brlADG()
       intake = brlDMI(ADG)
-      manure = manure + (intake - ADG)
+      cumManure = manure + (intake - ADG)
+      ! Calc N and P
       Nexc = brlNex()
       call brlN(Nexc, Norg, Nmin)
-      Norg_stored = Norg_stored + Norg
-      Nmin_stored = Nmin_stored + Nmin
       Pexc = brlPex()
       call brlP(Pexc,Porg, Pmin)
-      Porg_stored = Porg_stored + Porg
-      Pmin_stored = Pmin_stored + Pmin
+      ! Get fractions
+      cumNorg = cumNorg + Norg
+      cumNmin = cumNmin + Nmin
+      cumPorg = cumPorg + Porg
+      cumPmin = cumPmin + Pmin
 
 
       !update animal numbers
@@ -125,26 +129,30 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       meat_produced = culling*(wtBroilers)
 
       if (mod(nDay,(switch_feed*2)) .eq. 0) then
-            manure_out = manure
-            Pmin_out = Pmin_stored/manure_out
-            Porg_out = Pmin_stored/manure_out
-            Norg_out = Norg_stored/manure_out
-            Nmin_out = Nmin_stored/manure_out
+            manure_out = cumManure
+            Pmin_frac = cumPmin/manure_out
+            Porg_frac = cumPmin/manure_out
+            Norg_frac = cumNorg/manure_out
+            Nmin_frac = cumNmin/manure_out
       else
             manure_out = 0
-            Pmin_out = 0
-            Porg_out = 0
+            Pmin_frac = 0
+            Porg_frac = 0
             Norg_out = 0
-            Nmin_out = 0
+            Nmin_frac = 0
+      end if
 
+      ! add a storage var for manure
+      manureStore = manureStore + manure_out
 C             if (nBroilers .gt. 0) wtBroilers=(wtBroilers+ADG*nBroilers)
 C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
 
 
-      nDay = nDay + 1
-
       end do
 
+
+
+      ! subroutines 
       contains
             function brlADG() result(ADG)
                implicit none
@@ -194,11 +202,10 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       end function brlNex
 
       subroutine brlN(Nexc, Norg, Nmin)
-            real, intent(in) :: Nexc
-            real, intent(out) :: Nvol, Nmin, Norg
+            real :: Nexc, Nvol, Nmin, Norg
             Nvol = ((0.362+0.116+0.002)*Nexc)
-            Norg = (Nexc-Nvol)-Nmin
             Nmin = ((Nexc-Nvol)*0.49)
+            Norg = (Nexc-Nvol)-Nmin
       end subroutine brlN
 
       function brlPex() result(Pexc)
@@ -221,8 +228,7 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       
       !Eghball 2002
       subroutine brlP(Pexc, Porg, Pmin)
-            real, intent(in) :: Pexc
-            real, intent(out) :: Porg, Pmin
+            real :: Pexc, Porg, Pmin
             Pmin = (0.9*Pexc)
             Porg = ((Pexc-Pmin))
       end subroutine brlP      
