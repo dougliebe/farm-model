@@ -1,13 +1,13 @@
       program broiler 
       implicit none
 C       ! make array for outputs
-C       real outputs(45)
+      real outputs(45)
 
       real :: ADG, born, CPo, CPy, culling, CumSumWt, fDay, iChicks
       real :: iDay, kBirth, kCull, kLaying, kMature, kMortality
       real :: maturing, ME_mature, ME_young, N, nBroilers, nChicks
       real :: nDay, Nexc, Nmin, Norg, nP_mature, nP_young, Nvol, P 
-      real :: P_mature, P_young, Pexc, Pmin, Pvol, switch_feed
+      real :: P_mature, P_young, Pexc, Porg, Pmin, Pvol, switch_feed
       real :: Temp, wtBroilers, wtChicks, meat_produced
       real :: wt_per_bird, intake
       integer :: t
@@ -87,6 +87,7 @@ C       real outputs(45)
             call brlN(Nexc, Norg, Nmin)
             Pexc = brlPex()
             call brlP(Pexc,Porg, Pmin)
+            outputs(int(nDay)) = Porg
 
             !update animal numbers
             if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality)
@@ -104,7 +105,7 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       nDay = nDay + 1
 
       end do
-
+      print *, sum(outputs)
       contains
             function brlADG() result(ADG)
                implicit none
@@ -154,11 +155,12 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       end function brlNex
 
       subroutine brlN(Nexc, Norg, Nmin)
-            real, intent(in) :: Nexc
-            real, intent(out) :: Nvol, Nmin, Norg
+C             real, intent(in) :: Nexc
+C             real, intent(out) :: Nvol, Nmin, Norg
+            real :: Nexc, Nvol, Nmin, Norg
             Nvol = ((0.362+0.116+0.002)*Nexc)
-            Norg = (Nexc-Nvol)-Nmin
             Nmin = ((Nexc-Nvol)*0.49)
+            Norg = (Nexc-Nvol)-Nmin
       end subroutine brlN
 
       function brlPex() result(Pexc)
@@ -181,8 +183,9 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       
       !Eghball 2002
       subroutine brlP(Pexc, Porg, Pmin)
-            real, intent(in) :: Pexc
-            real, intent(out) :: Porg, Pmin
+C             real, intent(in) :: Pexc
+C             real, intent(out) :: Porg, Pmin
+            real :: Pexc, Porg, Pmin
             Pmin = (0.9*Pexc)
             Porg = ((Pexc-Pmin))
       end subroutine brlP      

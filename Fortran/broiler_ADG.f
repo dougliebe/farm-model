@@ -151,7 +151,8 @@ C }
       
 
             
-            outputs(int(nDay)) = brlDMI()
+            outputs(int(nDay)) = brlNex()
+            ()
 
 
             !update animal numbers
@@ -195,6 +196,26 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
             DMI = intake_ME/fed_ME
       return
       end function brlDMI
+      
+      function brlNex() result(Nexc)
+            implicit none
+            real :: Nexc, CP, FI, Nintake, Nret
+            if (nChicks .gt. 0) then
+                  CP = CPy
+            else 
+                  CP = CPo
+            end if
+            FI = brlDMI(ADG)
+            if (nBroilers .gt. 0) then
+                  Nintake = FI*1000 * nBroilers * (CP/100)/6.25
+                  Nret = 29 * (ADG*nBroilers) ! Constant 29 g/kg of BW gain according to ITAVI, 2013
+                  Nexc = (Nintake - Nret)/1000 ! Formula from Belloir et al. 2017
+            else 
+                  Nintake = FI * nChicks * (CP/100)/6.25 !N in kg
+                  Nexc = (0.589*Nintake*1000 - 5.004)/1000 !Bregendahl et al. 2002 using N, grams
+            end if      
+            return ! Returns N in kg
+      end function brlNex
 
 
 
