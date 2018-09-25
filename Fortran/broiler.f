@@ -148,10 +148,6 @@ C             if (nBroilers .gt. 0) wtBroilers=(wtBroilers+ADG*nBroilers)
 C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
 
 
-      end do
-
-
-
       ! subroutines 
       contains
             function brlADG() result(ADG)
