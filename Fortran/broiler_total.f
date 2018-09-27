@@ -1,4 +1,4 @@
-      subroutine broiler
+      program broiler_total
       implicit none
 
 
@@ -66,6 +66,27 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       real :: cumNmin
       real :: cumPorg
       real :: cumPmin
+C     added vars
+      real :: ADG
+      real :: cumManure
+      real :: iChicks
+      real :: intake
+      real :: manure_out
+      real :: manureStore
+      real :: meat_produced
+      real :: Nexc
+      real :: Nmin
+      real :: Norg
+      real :: Nmin_frac
+      real :: Norg_frac
+      real :: Pexc
+      real :: Pmin
+      real :: Porg
+      real :: Porg_frac
+      real :: Pmin_frac
+      real :: Temp
+      real :: wt_per_bird
+
 
       real :: nDay
       real :: nChicks
@@ -83,18 +104,19 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       real :: switch_feed
 
       nDay = 1
-      nChicks = 0
+      iChicks = 100
+      nChicks = iChicks
       nBroilers = 0
-      wtChicks = 0
+      wtChicks = iChicks*0.025
       wtBroilers = 0
-      ME_young = 0
-      ME_mature = 0
-      CPy = 0
-      CPo = 0
-      nP_young = 0
-      nP_mature = 0
-      P_young = 0
-      P_mature = 0
+      ME_young = 3050
+      ME_mature = 3180
+      CPy = 21.5
+      CPo = 19
+      nP_young = 0.25
+      nP_mature = 0.25
+      P_young = 500
+      P_mature = 500
       switch_feed = 22
 
       kMature = 1
@@ -109,6 +131,26 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       cumPorg = 0
       cumPmin = 0
 
+C      added vars
+      ADG = 0
+      cumManure = 0
+      intake = 0
+      manure_out = 0
+      manureStore = 0
+      meat_produced = 0
+      Nexc = 0
+      Nmin = 0
+      Norg = 0
+      Nmin_frac = 0
+      Norg_frac = 0
+      Pexc = 0
+      Pmin = 0
+      Porg = 0
+      Porg_frac = 0
+      Pmin_frac = 0
+      Temp = 31
+      wt_per_bird = 0
+
       ! put ceiling on temp effects
       if(Temp .le. 23) Temp = 23
       if (Temp .ge. 31) Temp = 31
@@ -122,32 +164,29 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
             culling = nBroilers
             nBroilers = 0
             wtBroilers = 0
-            t = 2
       else if (mod(nDay,(switch_feed)) .eq. 0) then
             nBroilers = nChicks
             wtBroilers = wtChicks
             nChicks = 0
             wtChicks = 0
-            t = 1
       else
             if (nBroilers .gt. 0) wtBroilers=
      &       (wtBroilers+ADG*nBroilers)
             if (nChicks .gt. 0) wtChicks = (wtChicks +
      &       ADG*nChicks)
-            t = 0
       end if
 
       ! calculations of weights 
       wt_per_bird=(wtChicks+wtBroilers)/(nChicks+nBroilers)
       ADG = brlADG()
       intake = brlDMI(ADG)
-      cumManure = manure + (intake - ADG)
+      cumManure = cumManure + (intake - ADG)
       ! Calc N and P
       Nexc = brlNex()
       call brlN(Nexc, Norg, Nmin)
       Pexc = brlPex()
       call brlP(Pexc,Porg, Pmin)
-      print *, org
+      print *, Porg
 
       ! Get fractions
       cumNorg = cumNorg + Norg
@@ -173,7 +212,7 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
             manure_out = 0
             Pmin_frac = 0
             Porg_frac = 0
-            Norg_out = 0
+            Norg_frac = 0
             Nmin_frac = 0
       end if
 
@@ -265,4 +304,4 @@ C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
       end subroutine brlP      
 
 
-      end
+      end program broiler_total
