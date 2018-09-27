@@ -1,4 +1,5 @@
       subroutine broiler
+      implicit none
 
 C     ~ ~ ~ PURPOSE ~ ~ ~
 C     this subroutine computes the lake hydrologic pesticide balance.
@@ -59,10 +60,10 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       real :: maturing 
       real :: culling
       real :: born
-      real :: Norg_frac
-      real :: Ninorg_frac
-      real :: Porg_frac
-      real :: Pinorg_frac
+      real :: cumNorg
+      real :: cumNmin
+      real :: cumPorg
+      real :: cumPmin
 
       kMature = 1
       kBirth = 1
@@ -146,10 +147,6 @@ C     ~ ~ ~ ~ ~ ~ END SPECIFICATIONS ~ ~ ~ ~ ~ ~
       manureStore = manureStore + manure_out
 C             if (nBroilers .gt. 0) wtBroilers=(wtBroilers+ADG*nBroilers)
 C             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
-
-
-      end do
-
 
 
       ! subroutines 
