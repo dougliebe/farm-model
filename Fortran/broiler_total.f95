@@ -84,11 +84,11 @@
       real :: Porg
       real :: Porg_frac
       real :: Pmin_frac
-      real :: Temp
+      real :: Temp,DIGIntake
       real :: wt_per_bird
 
 
-      real :: nDay
+     integer:: nDay,fDay,switch_feed
       real :: nChicks
       real :: nBroilers
       real :: wtChicks
@@ -100,10 +100,12 @@
       real :: nP_young
       real :: nP_mature
       real :: P_young
-      real :: P_mature
-      real :: switch_feed
+      real :: P_mature, digest
+      !real :: switch_feed
 
       nDay = 1
+      fDay = 44
+      digest = 0.7
       iChicks = 100
       nChicks = iChicks
       nBroilers = 0
@@ -156,8 +158,18 @@
       if (Temp .ge. 31) Temp = 31
       
       
-
-
+     do nDay = 1, fDay
+      wt_per_bird =(wtChicks+wtBroilers)/(nChicks+nBroilers)
+      ADG = brlADG()
+      intake = brlDMI(ADG)
+      !cumManure = cumManure + (intake - ADG)
+      DIGIntake = intake * digest
+      cumManure = cumManure + (intake - DIGIntake)*(nChicks+ nBroilers)
+      ! Calc N and P
+      Nexc = brlNex()
+      call brlN(Nexc, Norg, Nmin)
+      Pexc = brlPex()
+      call brlP(Pexc,Porg, Pmin)
       if (mod(nDay,(switch_feed*2)) .eq. 0) then
             nChicks = iChicks
             wtChicks = 0.025*nChicks
@@ -172,21 +184,15 @@
       else
             if (nBroilers .gt. 0) wtBroilers= &
      &       (wtBroilers+ADG*nBroilers)
+
             if (nChicks .gt. 0) wtChicks = (wtChicks + &
      &       ADG*nChicks)
+
       end if
 
       ! calculations of weights 
-      wt_per_bird=(wtChicks+wtBroilers)/(nChicks+nBroilers)
-      ADG = brlADG()
-      intake = brlDMI(ADG)
-      cumManure = cumManure + (intake - ADG)
-      ! Calc N and P
-      Nexc = brlNex()
-      call brlN(Nexc, Norg, Nmin)
-      Pexc = brlPex()
-      call brlP(Pexc,Porg, Pmin)
-      print *, Porg
+  
+      !print *, Porg
 
       ! Get fractions
       cumNorg = cumNorg + Norg
@@ -196,8 +202,8 @@
 
 
       !update animal numbers
-      if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality)
-      if (nChicks .gt. 0) nChicks = nChicks-(kMortality)
+      if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality*iChicks/(switch_feed*2)/100)
+      if (nChicks .gt. 0) nChicks = nChicks-(kMortality*iChicks/(switch_feed*2)/100)
       
       !wt updating
       meat_produced = culling*(wtBroilers)
@@ -205,7 +211,7 @@
       if (mod(nDay,(switch_feed*2)) .eq. 0) then
             manure_out = cumManure
             Pmin_frac = cumPmin/manure_out
-            Porg_frac = cumPmin/manure_out
+            Porg_frac = cumPorg/manure_out
             Norg_frac = cumNorg/manure_out
             Nmin_frac = cumNmin/manure_out
       else
@@ -218,6 +224,11 @@
 
       ! add a storage var for manure
       manureStore = manureStore + manure_out
+      !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
+        print *, nDay,nChicks,nBroilers,manureStore,intake,cumManure
+      end do
+     ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
+       !!nDay = nDay + 1
 !             if (nBroilers .gt. 0) wtBroilers=(wtBroilers+ADG*nBroilers)
 !             if (nChicks .gt. 0) wtChicks = (wtChicks + ADG*nChicks)
 
@@ -274,7 +285,7 @@
       subroutine brlN(Nexc, Norg, Nmin)
             real :: Nexc, Nvol, Nmin, Norg
             Nvol = ((0.362+0.116+0.002)*Nexc)
-            Nmin = ((Nexc-Nvol)*0.49)
+            Nmin = ((Nexc-Nvol)*0.17)
             Norg = (Nexc-Nvol)-Nmin
       end subroutine brlN
 
