@@ -39,7 +39,7 @@ wtChicks <- 0
 source('inputFiles/broiler.input.text')
 
 
-kMortality <- 7 #as whole number %
+# kMortality <- 7 #as whole number % in the txt file too
 iDay <- 1
 nDay <- iDay
 
@@ -55,7 +55,7 @@ wtBroilers <- 0
 kMature <- 1 #when chicks mature, they all do at once
 kBirth <- 1 #When chicks hatch, get all new chicks
 kCull <- 1 #when we sell, all sell
-kMortality <- kMortality*iChicks/switch_feed*2/100
+kMortality <- (kMortality/100)*iChicks/(switch_feed*2)
 Temp <- if(Temp<=23) {23} else {if(Temp>31) {31} else{Temp}}
 
 broiler_ADG <- function(Temp) {

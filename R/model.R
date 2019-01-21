@@ -7,7 +7,7 @@ source('R/Broiler.R')
 #Write an array
 val <- array(1, dim = c(10, length(seq(iDay,fDay, by = 1))))
 flow <- array(1, dim = c(9, length(seq(iDay,fDay, by = 1))))
-
+cumManure = 0
 
 while(nDay <= fDay) {
   if(animal == 'broiler') {
@@ -15,13 +15,16 @@ while(nDay <= fDay) {
     # Set t for broilers, know switch times
     t <- ifelse(nDay%%(switch_feed*2) == 0,2, ifelse(nDay%%switch_feed ==0,1,0))
 
-    # Rates
-    born <- (t==2)*kBirth*iChicks
-    maturing <- (t==1)*kMature*nChicks #t switches for broilers
-    culling <- (t==2)*kCull*nBroilers
+    # # Rates
+    # born <- (t==2)*kBirth*iChicks
+    # maturing <- (t==1)*kMature*nChicks #t switches for broilers
+    # culling <- (t==2)*kCull*nBroilers
     # laying <- kLaying*nLayers
 
     ADG <- broiler_ADG(Temp)
+    DMI <- broiler_Intake(ADG)
+    DIGIntake <- DMI *0.7
+    cumManure = cumManure + (DMI - DIGIntake)*(nChicks+nBroilers)
     Nexc <- broiler_N_excretion(ADG)
     Nvol <- broiler_N_volitilization(Nexc)
     Pexc <- broiler_P_excretion(ADG)
@@ -30,16 +33,27 @@ while(nDay <= fDay) {
     Pmin <- broiler_P_mineralization(Pexc) # in kilograms
     Porg <- Pexc - Pmin
 
-
+    if(t == 2) {
+      nChicks = iChicks
+      wtChicks = 0.025*nChicks
+      culling = kCull*nBroilers
+      nBroilers = 0
+      wtBroilers = 0
+    } else if (t == 1) {
+      nBroilers = nChicks
+      wtBroilers = wtChicks
+      nChicks = 0
+      wtChicks = 0
+    } else {
+      wtBroilers <- (nBroilers > 0)*(wtBroilers + ADG*nBroilers)
+      wtChicks <- (nChicks > 0)*(wtChicks + ADG*nChicks)
+    }
 
     # Update Numbers of Animals
-    nBroilers <- nBroilers+(maturing-culling)-(kMortality*(nBroilers > 0))
-    nChicks <- nChicks+(born-maturing)-(kMortality*(nChicks > 0))
+    nBroilers <- nBroilers-(kMortality*(nBroilers > 0))
+    nChicks <- nChicks-(kMortality*(nChicks > 0))
+    
     meat_produced <- culling*(wtBroilers)
-
-    wtBroilers <- (nBroilers > 0)*(wtBroilers + ADG*nBroilers + (t==1)*wtChicks)
-    wtChicks <- (nChicks > 0)*(wtChicks + ADG*nChicks)
-    if(t==2) {wtChicks <- 0.025*nChicks} #reset new chicks
   }
 
   if(animal == 'layer') {
@@ -170,8 +184,8 @@ while(nDay <= fDay) {
   # P.day <- Pexc
 
   # # Update Numbers of Animals
-  # flow[1,nDay] <- nCalf
-  # flow[2,nDay] <- nHeifer.first.lact
+  flow[1,nDay] <- nChicks
+  flow[2,nDay] <- nBroilers
   # flow[3,nDay] <- nHeifer.first.dry
   # flow[4,nDay] <- nLact
   # flow[5,nDay] <- nDry
@@ -202,8 +216,8 @@ par(mfrow = c(1,4))
 # plot(val[2,], main = 'steer.grow', xlab = 'Day', ylab = 'Count')
 # plot(val[3,], main = 'steer.finish', xlab = 'Day', ylab = 'Count')
 # plot(val[4,], main = 'Broilers', xlab = 'Day', ylab = 'Count')
-plot(val[5,], main = "Organic P", xlab = 'Day', ylab = 'kg')
-plot(val[9,], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
+plot(flow[1,], main = "Organic P", xlab = 'Day', ylab = 'kg')
+plot(flow[2,], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
 plot(val[7,], main = 'Organic N', xlab = 'Day', ylab = 'kg')
 plot(val[8,], main = 'Mineralized P', xlab = 'Day', ylab = 'kg')
 # plot(val[5,], main = 'Dry Cows', xlab = 'Day', ylab = 'Count')

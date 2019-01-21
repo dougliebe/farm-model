@@ -2,10 +2,10 @@
 animal <- 'broiler'
 
 # Start a day count
-fDay <- 43*8 #Length of Simulation
+fDay <- 43 #Length of Simulation
 
 # Set chick numbers
-iChicks <- 25000
+iChicks <- 200000
 kMortality <- 5 #Mortality, % over cycle
 
 switch_feed <- 22 #Age at which diet is switched
