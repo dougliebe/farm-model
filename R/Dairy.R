@@ -37,7 +37,7 @@ wtLact <- 0
 wtDry <- 0
 
 # Read input file
-source('dairy.input.text')
+source('inputFiles/dairy.input.text')
 
 iDay <- 1
 nDay <- iDay
