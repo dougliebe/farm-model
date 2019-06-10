@@ -2,17 +2,16 @@
       implicit none
 
 
-      real :: nDay
-      real :: fDay
+      integer :: nDay, fDay
 
       ! Set starting animal numbers
       real :: iCalf
-      real :: iHeifer.first.lact
-      real :: iHeifer.second.lact
-      real :: iHeifer.third.lact
-      real :: iHeifer.first.dry
-      real :: iHeifer.second.dry
-      real :: iHeifer.third.dry
+      real :: iHeifer_first_lact
+      real :: iHeifer_second_lact
+      real :: iHeifer_third_lact
+      real :: iHeifer_first_dry
+      real :: iHeifer_second_dry
+      real :: iHeifer_third_dry
       real :: iLact
       real :: iDry
 
@@ -27,6 +26,10 @@
       real :: MilkFat
       real :: MilkProtein
       real :: FCM
+      real :: born, calf_NEma, CETI, culling, heifer_NEma, meat_produced
+      real :: new_dry_herd, new_first_dry, new_first_lact, new_lact_from_third
+      real :: new_lact_herd, new_second_lact, new_second_dry, new_third_dry
+      real :: new_third_lact, ADG, DIM, lact_P
 
       !###########################################
       ! Feed Characteristics
@@ -60,12 +63,10 @@
 
 
       ! Set all rates to 0 before reading files
-      real :: kCull
       real :: kMature
       real :: kDry
       real :: kFreshening
       real :: kMilk
-      real :: kMortality
 
       ! Set outputs to 0
       real :: Meat
@@ -75,22 +76,22 @@
 
       ! Set animal numbers to start
       real :: nCalf
-      real :: nHeifer.first.lact
-      real :: nHeifer.first.dry
-      real :: nHeifer.second.lact
-      real :: nHeifer.second.dry
-      real :: nHeifer.third.lact
-      real :: nHeifer.third.dry
+      real :: nHeifer_first_lact
+      real :: nHeifer_first_dry
+      real :: nHeifer_second_lact
+      real :: nHeifer_second_dry
+      real :: nHeifer_third_lact
+      real :: nHeifer_third_dry
       real :: nLact
       real :: nDry
 
       real :: wtCalf
-      real :: wtHeifer.first.lact
-      real :: wtHeifer.second.lact
-      real :: wtHEifer.third.lact
-      real :: wtHeifer.first.dry
-      real :: wtHeifer.second.dry
-      real :: wtHeifer.third.dry
+      real :: wtHeifer_first_lact
+      real :: wtHeifer_second_lact
+      real :: wtHEifer_third_lact
+      real :: wtHeifer_first_dry
+      real :: wtHeifer_second_dry
+      real :: wtHeifer_third_dry
       real :: wtLact
       real :: wtDry
 
@@ -99,16 +100,16 @@
 
       ! Start a day count
       nDay = 1
-      fDay = 4000 !Length of Simulation
+      fDay = 10 !Length of Simulation
 
       ! Set starting animal numbers
       iCalf = 220
-      iHeifer.first.lact = 70
-      iHeifer.second.lact = 70
-      iHeifer.third.lact =70
-      iHeifer.first.dry = 15
-      iHeifer.second.dry = 15
-      iHeifer.third.dry = 15
+      iHeifer_first_lact = 70
+      iHeifer_second_lact = 70
+      iHeifer_third_lact =70
+      iHeifer_first_dry = 15
+      iHeifer_second_dry = 15
+      iHeifer_third_dry = 15
       iLact = 500
       iDry = 100
 
@@ -154,9 +155,9 @@
 
       ! Set all rates to 0 before reading files
       kCull = 0
-      kMature = 1/365*2
-      kDry = 1/305
-      kFreshening = 1/60
+      kMature = (1/365.0)*2
+      kDry = (1/305.0)
+      kFreshening = (1/60.0)
       kMilk = 0
       kMortality = 7 !as whole number percentage
 
@@ -168,85 +169,92 @@
 
       ! Set animal numbers to start
       nCalf = iCalf 
-      nHeifer.first.lact = iHeifer.first.lact
-      nHeifer.first.dry = iHeifer.first.dry
-      nHeifer.second.lact = iHeifer.second.lact
-      nHeifer.second.dry = iHeifer.second.dry
-      nHeifer.third.lact = iHeifer.third.lact
-      nHeifer.third.dry = iHeifer.third.dry
+      nHeifer_first_lact = iHeifer_first_lact
+      nHeifer_first_dry = iHeifer_first_dry
+      nHeifer_second_lact = iHeifer_second_lact
+      nHeifer_second_dry = iHeifer_second_dry
+      nHeifer_third_lact = iHeifer_third_lact
+      nHeifer_third_dry = iHeifer_third_dry
       nLact = iLact
       nDry = iDry
 
       wtCalf = 0
-      wtHeifer.first.lact = 0
-      wtHeifer.second.lact = 0
-      wtHEifer.third.lact = 0
-      wtHeifer.first.dry = 0
-      wtHeifer.second.dry = 0
-      wtHeifer.third.dry = 0
+      wtHeifer_first_lact = 0
+      wtHeifer_second_lact = 0
+      wtHEifer_third_lact = 0
+      wtHeifer_first_dry = 0
+      wtHeifer_second_dry = 0
+      wtHeifer_third_dry = 0
       wtLact = 0
       wtDry = 0
-
-
-      ! put ceiling on temp effects
-      if(Temp .le. 23) then Temp = 23
-      if (Temp .ge. 31) then Temp = 31
-      
       
      do nDay = 1, fDay
 
       CETI = 27.88 - (0.456 * Temp) + (0.010754 * Temp**2)- &
-     &  (0.4905 * RH) + (0.00088 * RH^2)+ (1.1507 * WS) - &
-     & (0.126447 * WS^2)+ (0.019876 * Temp * RH)- &
+     &  (0.4905 * RH) + (0.00088 * RH**2)+ (1.1507 * WS) - &
+     & (0.126447 * WS**2)+ (0.019876 * Temp * RH)- &
      & (0.046313 * Temp * WS)+ (0.4167 * HRS)
 
       DMINC = (119.62 - 0.9708 * CETI)/100
-      if(Temp .ge. 20) then DMIAF_temp = DMINC
-      if(Temp .lt. 20) then DMIAF_temp = 1.0433 - (0.0044 * Temp) + (0.0001 * Temp**2)
-      
+      if(Temp .ge. 20) then 
+      	DMIAF_temp = DMINC
+      end if 
+      if(Temp .lt. 20) then 
+      	DMIAF_temp = 1.0433 - (0.0044 * Temp) + (0.0001 * Temp**2)
+      end if
       calf_NEma = (1.37 * calf_ME) - (0.138 * calf_ME**2) + (0.0105 * calf_ME**3) - 1.12
       heifer_NEma = (1.37 * heifer_ME) - (0.138 * heifer_ME**2) + (0.0105 * heifer_ME**3) - 1.12
 
       !correction for breed index (fox et al 2004)
-      if(Breed == 1) then BI = 1.08
-      else BI = 1
+      if(Breed == 1) then 
+      	BI = 1.08
+      else 
+      	BI = 1
+      end if
 
       ! calculations of weights 
   
       !print *, Porg
 
-      ! Get fractions
-      cumNorg = cumNorg + Norg
-      cumNmin = cumNmin + Nmin
-      cumPorg = cumPorg + Porg
-      cumPmin = cumPmin + Pmin
 
+      !new animal numbers
 
-      !update animal numbers
-      if (nBroilers .gt. 0) nBroilers = nBroilers-(kMortality*iChicks/(switch_feed*2)/100)
-      if (nChicks .gt. 0) nChicks = nChicks-(kMortality*iChicks/(switch_feed*2)/100)
-      
+      born = ((kFreshening*nDry*0.5)+(kFreshening*nHeifer_first_dry*0.5)+ &
+   &           +(kMature*nCalf*0.5)+ &
+   &  (kFreshening*nHeifer_second_dry*0.5)+(kFreshening*nHeifer_third_dry*0.5))*kMortality/100 
+      new_lact_herd = (kFreshening*nDry)*(100-kMortality)/100
+      new_first_lact = kMature*nCalf*(100-kMortality)/100
+      new_second_lact = kFreshening*nHeifer_first_dry*(100-kMortality)/100
+      new_third_lact = kFreshening*nHeifer_second_dry*(100-kMortality)/100
+      new_first_dry = kDry*nHeifer_first_lact*(100-kMortality)/100
+      new_second_dry = kDry*nHeifer_second_lact*(100-kMortality)/100
+      new_third_dry = kDry*nHeifer_third_lact*(100-kMortality)/100
+      new_dry_herd = kDry*nLact*(100-kMortality)/100
+      new_lact_from_third = kFreshening*nHeifer_third_dry*(100-kMortality)/100
+      culling = (kCull/100*nLact)/365
       !wt updating
-      meat_produced = culling*(wtBroilers)
 
-      if (mod(nDay,(switch_feed*2)) .eq. 0) then
-            manure_out = cumManure
-            Pmin_frac = cumPmin/manure_out
-            Porg_frac = cumPorg/manure_out
-            Norg_frac = cumNorg/manure_out
-            Nmin_frac = cumNmin/manure_out
-      else
-            manure_out = 0
-            Pmin_frac = 0
-            Porg_frac = 0
-            Norg_frac = 0
-            Nmin_frac = 0
-      end if
 
-      ! add a storage var for manure
-      manureStore = manureStore + manure_out
+      ! update animal numbers
+      nCalf = nCalf + born - new_first_lact + 1
+      nHeifer_first_dry = nHeifer_first_dry + new_first_dry - new_second_lact
+      nHeifer_second_dry = nHeifer_second_dry + new_second_dry - new_third_lact
+      nHeifer_third_dry = nHeifer_third_dry + new_third_dry - new_lact_from_third
+      nHeifer_first_lact = nHeifer_first_lact + new_first_lact - new_first_dry
+      nHeifer_second_lact = nHeifer_second_lact + new_second_lact - new_second_dry
+      nHeifer_third_lact = nHeifer_third_lact + new_third_lact - new_third_dry
+      nLact = nLact + new_lact_herd - culling - new_dry_herd + new_lact_from_third
+      nDry = nDry + new_dry_herd - new_lact_herd
+	  if (nCalf .lt. 0) then
+        nCalf = 0
+      endif 
+
+      meat_produced = culling*(wtLact)
+
+
+
       !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, nDay,nChicks,nBroilers,manureStore,intake,cumManure
+        print *, nLact
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
@@ -314,7 +322,7 @@
                   implicit none
                   real, intent(in) :: DMI
                   real :: Nexc
-                  Nexc = (((DMI*lact_CP*84.1)+(wtLact/nLact*0.196))
+                  Nexc = ((DMI*lact_CP*84.1)+(wtLact/nLact*0.196))
                   return
             end function lactNexc
 
@@ -341,7 +349,7 @@
                   Pexc = ((DMI*lact_P)-(2*(wtLact/nLact)/1000)-0.02743* &
            &            exp(((0.05527-0.000075*DIM)*DIM))- &
            &            0.02743*exp(((0.05527-0.000075*(DIM-1))*(DIM-1)))* &
-           &            (1.2+4.635*MW^0.22*(wtLact/nLact)^-0.22)*ADG/0.96)
+           &            (1.2+4.635*MW**(0.22)*(wtLact/nLact)**(-0.22))*ADG/0.96)
                   return
             end function cowPexc
 
@@ -350,11 +358,5 @@
                   real :: Pexc
                   Pexc = (DMI*dry_CP*78.39+51.4)
                   return
-            end function calfPexc
-            
-
-
-
-
-
+            end function dryPexc
       end program dairy_total
