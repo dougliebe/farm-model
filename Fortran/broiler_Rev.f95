@@ -104,7 +104,7 @@
       !real :: switch_feed
 
       nDay = 1
-      fDay = 88
+      fDay = 44*2
       digest = 0.7
       iChicks = 10000
       nChicks = iChicks

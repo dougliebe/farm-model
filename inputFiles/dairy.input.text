@@ -2,18 +2,18 @@
 animal <- 'dairy'
 
 # Start a day count
-fDay <- 1000 #Length of Simulation
+fDay <- 4000 #Length of Simulation
 
 # Set starting animal numbers
-iCalf <- 0
-iHeifer.first.lact <- 0
-iHeifer.second.lact <- 0
-iHeifer.third.lact <- 0
-iHeifer.first.dry <- 0
-iHeifer.second.dry <- 0
-iHeifer.third.dry <- 0
-iLact <- 100
-iDry <- 0
+iCalf <- 220
+iHeifer.first.lact <- 70
+iHeifer.second.lact <- 70
+iHeifer.third.lact <-70
+iHeifer.first.dry <- 15
+iHeifer.second.dry <- 15
+iHeifer.third.dry <- 15
+iLact <- 500
+iDry <- 100
 
 # Animal Characteristics
 kCull <- 80 #rate of cows leaving milking herd, %
