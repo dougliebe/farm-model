@@ -29,7 +29,7 @@
       real :: born, calf_NEma, CETI, culling, heifer_NEma, meat_produced
       real :: new_dry_herd, new_first_dry, new_first_lact, new_lact_from_third
       real :: new_lact_herd, new_second_lact, new_second_dry, new_third_dry
-      real :: new_third_lact, ADG, DIM, lact_P
+      real :: new_third_lact, ADG, DIM
 
       !###########################################
       ! Feed Characteristics
@@ -94,6 +94,33 @@
       real :: wtHeifer_third_dry
       real :: wtLact
       real :: wtDry
+      real :: lact_DMI
+      real :: dry_DMI
+      real :: calf_DMI
+      real :: heifer_first_lact_DMI
+      real :: heifer_second_lact_DMI
+      real :: heifer_third_lact_DMI
+      real :: heifer_first_dry_DMI
+      real :: heifer_second_dry_DMI
+      real :: heifer_third_dry_DMI
+      real :: lact_N
+      real :: dry_N
+      real :: calf_N
+      real :: heifer_first_lact_N
+      real :: heifer_second_lact_N
+      real :: heifer_third_lact_N
+      real :: heifer_first_dry_N
+      real :: heifer_second_dry_N
+      real :: heifer_third_dry_N
+      real :: lact_P
+      real :: dry_P
+      real :: calf_P
+      real :: heifer_first_lact_P
+      real :: heifer_second_lact_P
+      real :: heifer_third_lact_P
+      real :: heifer_first_dry_P
+      real :: heifer_second_dry_P
+      real :: heifer_third_dry_P
 
 
 
@@ -114,52 +141,51 @@
       iDry = 100
 
       ! Animal Characteristics
-      kCull = 80 !rate of cows leaving milking herd, %
-      kMortality = 5 !rate of cows lost to disease, etc., %
+      kCull = 80.0 !rate of cows leaving milking herd, %
+      kMortality = 7.0 !rate of cows lost to disease, etc., %
       Breed = 1 !if Holsteins 1, else 0
-      PKYD = 43 !peak milk yield, kg/d
-      MW = 600 !mature weight in kg
-      kPreg = 40
+      PKYD = 43.0 !peak milk yield, kg/d
+      MW = 600.0 !mature weight in kg
+      kPreg = 40.0
       MilkFat = 3.5 !average MF% of herd
       MilkProtein = 3.5 !average Protein% of herd
-      FCM = 3 !Fat corrected milk, %
+      FCM = 3.0 !Fat corrected milk, %
 
       !###########################################
       ! Feed Characteristics
 
 
       ! Calf Feeding
-      calf_ME = 5 !calf ME of diet
-      calf_CP = 1 !CP, %
+      calf_ME = 5.0 !calf ME of diet
+      calf_CP = 1.0 !CP, %
 
       !Yearling Feed
-      heifer_ME = 5 !yearling ME of diet
+      heifer_ME = 5.0 !yearling ME of diet
       heifer_CP = 2.5 !CP, %
 
       !Lactating Cow Feed
-      lact_CP = 10 !CP, %
+      lact_CP = 10.0 !CP, %
 
       !Dry Cow Diet
-      dry_CP = 10 !CP, %
+      dry_CP = 10.0 !CP, %
 
 
       !###########################################
       ! Environmental Conditions
-      HRS = 12 !Hours perceived sunlight
+      HRS = 12.0 !Hours perceived sunlight
 
       ! Perceived Temeprature
-      Temp = 24 !Indoor temp, C
-      RH = 75 !Relative Humidity, %
-      WS = 1 !Average wind speed, kph
+      Temp = 24.0 !Indoor temp, C
+      RH = 75.0 !Relative Humidity, %
+      WS = 1.0 !Average wind speed, kph
 
 
       ! Set all rates to 0 before reading files
-      kCull = 0
       kMature = (1/365.0)*2
       kDry = (1/305.0)
       kFreshening = (1/60.0)
-      kMilk = 0
-      kMortality = 7 !as whole number percentage
+      kMilk = 0.0
+      kMortality = 7.0 !as whole number percentage
 
       ! Set outputs to 0
       Meat = 0
@@ -197,19 +223,19 @@
 
       DMINC = (119.62 - 0.9708 * CETI)/100
       if(Temp .ge. 20) then 
-      	DMIAF_temp = DMINC
+        DMIAF_temp = DMINC
       end if 
       if(Temp .lt. 20) then 
-      	DMIAF_temp = 1.0433 - (0.0044 * Temp) + (0.0001 * Temp**2)
+        DMIAF_temp = 1.0433 - (0.0044 * Temp) + (0.0001 * Temp**2)
       end if
       calf_NEma = (1.37 * calf_ME) - (0.138 * calf_ME**2) + (0.0105 * calf_ME**3) - 1.12
       heifer_NEma = (1.37 * heifer_ME) - (0.138 * heifer_ME**2) + (0.0105 * heifer_ME**3) - 1.12
 
       !correction for breed index (fox et al 2004)
       if(Breed == 1) then 
-      	BI = 1.08
+        BI = 1.08
       else 
-      	BI = 1
+        BI = 1
       end if
 
       ! calculations of weights 
@@ -218,22 +244,62 @@
 
 
       !new animal numbers
-
       born = ((kFreshening*nDry*0.5)+(kFreshening*nHeifer_first_dry*0.5)+ &
    &           +(kMature*nCalf*0.5)+ &
    &  (kFreshening*nHeifer_second_dry*0.5)+(kFreshening*nHeifer_third_dry*0.5))*kMortality/100 
-      new_lact_herd = (kFreshening*nDry)*(100-kMortality)/100
-      new_first_lact = kMature*nCalf*(100-kMortality)/100
-      new_second_lact = kFreshening*nHeifer_first_dry*(100-kMortality)/100
-      new_third_lact = kFreshening*nHeifer_second_dry*(100-kMortality)/100
-      new_first_dry = kDry*nHeifer_first_lact*(100-kMortality)/100
-      new_second_dry = kDry*nHeifer_second_lact*(100-kMortality)/100
-      new_third_dry = kDry*nHeifer_third_lact*(100-kMortality)/100
-      new_dry_herd = kDry*nLact*(100-kMortality)/100
-      new_lact_from_third = kFreshening*nHeifer_third_dry*(100-kMortality)/100
-      culling = (kCull/100*nLact)/365
-      !wt updating
+      new_lact_herd = (kFreshening*nDry)*(100.0-kMortality)/100.0
+      new_first_lact = kMature*nCalf*(100.0-kMortality)/100.0
+      new_second_lact = kFreshening*nHeifer_first_dry*(100.0-kMortality)/100.0
+      new_third_lact = kFreshening*nHeifer_second_dry*(100.0-kMortality)/100.0
+      new_first_dry = kDry*nHeifer_first_lact*(100.0-kMortality)/100.0
+      new_second_dry = kDry*nHeifer_second_lact*(100.0-kMortality)/100.0
+      new_third_dry = kDry*nHeifer_third_lact*(100.0-kMortality)/100.0
+      new_dry_herd = kDry*nLact*(100.0-kMortality)/100.0
+      new_lact_from_third = kFreshening*nHeifer_third_dry*(100.0-kMortality)/100.0
+      culling = (kCull/100.0*nLact)/365.0
+      
 
+      !wt updating
+      wtLact = dairy_ADG(2500)
+      wtDry = dairy_ADG(2500)
+      wtCalf = dairy_ADG(100)
+      wtHeifer_first_lact = dairy_ADG(365*2)
+      wtHeifer_second_lact = dairy_ADG(365*3)
+      wtHeifer_third_lact = dairy_ADG(365*4)
+      wtHeifer_first_dry = dairy_ADG(365*2+305)
+      wtHeifer_second_dry = dairy_ADG(365*3+305)
+      wtHeifer_third_dry = dairy_ADG(365*4+305)
+      
+      ! cow DMIs
+      lact_DMI = lactDMI(wtLact)
+      calf_DMI = calfDMI(wtCalf)
+      heifer_first_lact_DMI = heiferDMI(wtHeifer_first_lact)
+      heifer_second_lact_DMI = heiferDMI(wtHeifer_second_lact)
+      heifer_third_lact_DMI = heiferDMI(wtHeifer_third_lact)
+      heifer_first_dry_DMI = heiferDMI(wtHeifer_first_dry)
+      heifer_second_dry_DMI = heiferDMI(wtHeifer_second_dry)
+      heifer_third_dry_DMI = heiferDMI(wtHeifer_third_dry)
+      dry_DMI = dryDMI(wtDry)
+
+      !N and P updates
+      lact_N = lactNexc(lact_DMI)
+      dry_N = dryNexc(dry_DMI)
+      calf_N = calfNexc(calf_DMI)
+      heifer_first_lact_N = heiferNexc(heifer_first_lact_DMI)
+      heifer_second_lact_N = heiferNexc(heifer_second_lact_DMI)
+      heifer_third_lact_N = heiferNexc(heifer_third_lact_DMI)
+      heifer_first_dry_N = heiferNexc(heifer_first_dry_DMI)
+      heifer_second_dry_N = heiferNexc(heifer_second_dry_DMI)
+      heifer_third_dry_N = heiferNexc(heifer_third_dry_DMI)
+      lact_P = cowPexc(lact_DMI)
+      dry_P = dryPexc(dry_DMI)
+      calf_P = calfPexc(calf_DMI)
+      heifer_first_lact_P = cowPexc(heifer_first_lact_DMI)
+      heifer_second_lact_P = cowPexc(heifer_second_lact_DMI)
+      heifer_third_lact_P = cowPexc(heifer_third_lact_DMI)
+      heifer_first_dry_P = cowPexc(heifer_first_dry_DMI)
+      heifer_second_dry_P = cowPexc(heifer_second_dry_DMI)
+      heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)
 
       ! update animal numbers
       nCalf = nCalf + born - new_first_lact + 1
@@ -245,7 +311,7 @@
       nHeifer_third_lact = nHeifer_third_lact + new_third_lact - new_third_dry
       nLact = nLact + new_lact_herd - culling - new_dry_herd + new_lact_from_third
       nDry = nDry + new_dry_herd - new_lact_herd
-	  if (nCalf .lt. 0) then
+      if (nCalf .lt. 0) then
         nCalf = 0
       endif 
 
@@ -254,7 +320,7 @@
 
 
       !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, nLact
+        print *, nLact, wtLact ,culling, new_dry_herd ,new_lact_from_third
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
@@ -264,6 +330,18 @@
 
       ! subroutines 
       contains
+            function dairy_ADG(t) result(BW)
+                implicit none
+                integer, intent(in) :: t
+                real :: BW, A, k, b, M
+                A = 619 !asymptotic weight, kg
+                k = 0.0020 !Rate parameter
+                b = 0.905 ! integration constant
+                M = 1.2386 ! inflection parameter
+                BW = A*(1-(b*exp(-k*t)))**M
+                return 
+            end function dairy_ADG
+
             function calfDMI(BW) result(DMI)
                   implicit none
                   real, intent(in) :: BW

@@ -2,7 +2,7 @@
 animal <- 'dairy'
 
 # Start a day count
-fDay <- 4000 #Length of Simulation
+fDay <- 10000 #Length of Simulation
 
 # Set starting animal numbers
 iCalf <- 220

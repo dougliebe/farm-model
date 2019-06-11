@@ -2,7 +2,7 @@
 
 #####################  FOR LOOP #######################
 #Edit source of dairy file
-source('R/Broiler.R')
+source('R/Dairy.R')
 
 #Write an array
 val <- array(1, dim = c(10, length(seq(iDay,fDay, by = 1))))
@@ -199,27 +199,27 @@ while(nDay <= fDay) {
   # val[2,nDay] <- nHeifer.first.lact
   # val[3,nDay] <- nLact
   # val[4,nDay] <- nLaying.hens.brown+nPullets.brown+nMolt.hens.brown
-  val[5,nDay] <- Porg
+  # val[5,nDay] <- nLact
   # val[6,nDay] <- total.drypen
-  val[7,nDay] <- Norg
-  val[8,nDay] <- Pmin
-  val[9,nDay] <- Nmin
-  # val[10,nDay] <- P
+  val[7,nDay] <- nLact
+  val[8,nDay] <- new.lact.herd
+  val[9,nDay] <- culling
+  val[10,nDay] <- new.dry.herd
 
   nDay = nDay+1
 }
 ##############################################
 
 # Plot results
-par(mfrow = c(1,4))
+par(mfrow = c(2,2))
 # plot(val[1,], main = 'calves', xlab = 'Day', ylab = 'Count')
 # plot(val[2,], main = 'steer.grow', xlab = 'Day', ylab = 'Count')
 # plot(val[3,], main = 'steer.finish', xlab = 'Day', ylab = 'Count')
 # plot(val[4,], main = 'Broilers', xlab = 'Day', ylab = 'Count')
-plot(flow[1,], main = "Organic P", xlab = 'Day', ylab = 'kg')
-plot(flow[2,], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
-plot(val[7,], main = 'Organic N', xlab = 'Day', ylab = 'kg')
-plot(val[8,], main = 'Mineralized P', xlab = 'Day', ylab = 'kg')
+plot(val[7,], main = "Organic P", xlab = 'Day', ylab = 'kg')
+plot(val[8,], main = "Mineralized N", xlab = 'Day', ylab = 'kg')
+plot(val[9,], main = 'Organic N', xlab = 'Day', ylab = 'kg')
+plot(val[10,], main = 'Mineralized P', xlab = 'Day', ylab = 'kg')
 # plot(val[5,], main = 'Dry Cows', xlab = 'Day', ylab = 'Count')
 
 # plot(val[10,], main = "P Excretion", xlab = 'Day', ylab = 'Wt, kg')
