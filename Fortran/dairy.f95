@@ -157,7 +157,7 @@
 
       ! Calf Feeding
       calf_ME = 5.0 !calf ME of diet
-      calf_CP = 1.0 !CP, %
+      calf_CP = 16.0 !CP, %
 
       !Yearling Feed
       heifer_ME = 5.0 !yearling ME of diet
@@ -181,7 +181,7 @@
 
 
       ! Set all rates to 0 before reading files
-      kMature = (1/365.0)*2
+      kMature = 1/(365.0*2)
       kDry = (1/305.0)
       kFreshening = (1/60.0)
       kMilk = 0.0
@@ -245,8 +245,8 @@
 
       !new animal numbers
       born = ((kFreshening*nDry*0.5)+(kFreshening*nHeifer_first_dry*0.5)+ &
-   &           +(kMature*nCalf*0.5)+ &
-   &  (kFreshening*nHeifer_second_dry*0.5)+(kFreshening*nHeifer_third_dry*0.5))*kMortality/100 
+   &           (kMature*nCalf*0.5)+ &
+   &  (kFreshening*nHeifer_second_dry*0.5)+(kFreshening*nHeifer_third_dry*0.5))*((1-kMortality)/100) 
       new_lact_herd = (kFreshening*nDry)*(100.0-kMortality)/100.0
       new_first_lact = kMature*nCalf*(100.0-kMortality)/100.0
       new_second_lact = kFreshening*nHeifer_first_dry*(100.0-kMortality)/100.0
@@ -262,7 +262,7 @@
       !wt updating
       wtLact = dairy_ADG(2500)
       wtDry = dairy_ADG(2500)
-      wtCalf = dairy_ADG(100)
+      wtCalf = dairy_ADG(365)
       wtHeifer_first_lact = dairy_ADG(365*2)
       wtHeifer_second_lact = dairy_ADG(365*3)
       wtHeifer_third_lact = dairy_ADG(365*4)
@@ -320,7 +320,7 @@
 
 
       !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, nLact, wtLact ,culling, new_dry_herd ,new_lact_from_third
+        print *, nDry, dry_DMI, dry_N, ((dry_CP/100)*(dry_DMI*1000))
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
@@ -378,13 +378,13 @@
                   return
             end function dryDMI
 
-            ! Nitrogen Equations
+            ! Nitrogen Equations per cow
 
             function heiferNexc(DMI) result(Nexc)
                   implicit none
                   real, intent(in) :: DMI
                   real :: Nexc
-                  Nexc = (DMI*heifer_CP*78.39+51.4) !per cow
+                  Nexc = ((((heifer_CP/100)*(DMI*1000))/(DMI*1000)*DMI)*78.39+51.4) !per cow
                   return
             end function heiferNexc
 
@@ -392,7 +392,7 @@
                   implicit none
                   real, intent(in) :: DMI
                   real :: Nexc
-                  Nexc = (DMI*calf_CP*112.55)
+                  Nexc = ((((calf_CP/100)*(DMI*1000))/(DMI*1000)*DMI)*112.55)
                   return
             end function calfNexc
 
@@ -400,7 +400,7 @@
                   implicit none
                   real, intent(in) :: DMI
                   real :: Nexc
-                  Nexc = ((DMI*lact_CP*84.1)+(wtLact/nLact*0.196))
+                  Nexc = (((((lact_CP/100)*(DMI*1000))/(DMI*1000)*DMI)*84.1)+(wtLact*0.196))
                   return
             end function lactNexc
 
@@ -408,7 +408,7 @@
                   implicit none
                   real, intent(in) :: DMI
                   real :: Nexc
-                  Nexc = (DMI*dry_CP*78.39+51.4)
+                  Nexc = ((((dry_CP/100)*(DMI*1000))/(DMI*1000)*DMI)*78.39+51.4)
                   return
             end function dryNexc
 
@@ -417,17 +417,17 @@
             function calfPexc(DMI) result(Pexc)
                   real, intent(in) :: DMI
                   real :: Pexc
-                  Pexc = (DMI*calf_CP*112.55)
+                  Pexc = ((((calf_P/100)*(DMI*1000))/(DMI*1000)*DMI)*622.03)
                   return
             end function calfPexc
 
             function cowPexc(DMI) result(Pexc)
                   real, intent(in) :: DMI
                   real :: Pexc
-                  Pexc = ((DMI*lact_P)-(2*(wtLact/nLact)/1000)-0.02743* &
+                  Pexc = ((DMI*lact_P)-(2*(wtLact)/1000)-0.02743* &
            &            exp(((0.05527-0.000075*DIM)*DIM))- &
            &            0.02743*exp(((0.05527-0.000075*(DIM-1))*(DIM-1)))* &
-           &            (1.2+4.635*MW**(0.22)*(wtLact/nLact)**(-0.22))*ADG/0.96)
+           &            (1.2+4.635*MW**(0.22)*(wtLact)**(-0.22))*ADG/0.96)
                   return
             end function cowPexc
 
