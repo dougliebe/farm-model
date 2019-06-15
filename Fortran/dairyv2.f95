@@ -2,6 +2,106 @@
       implicit none
 
 
+!     ~ ~ ~ PURPOSE ~ ~ ~
+!     this subroutine computes the lake hydrologic pesticide balance.
+!     ~ ~ ~ INCOMING VARIABLES ~ ~ ~
+!     variable          |definition
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!     nDay              | day in cycle 
+!     nCalf             | number of calves
+!     nHeifer_first_lact| first lactation cows           
+!     nHeifer_first_dry | cows dry after first lactation 
+!     nHeifer_second_lact| second lactation cows           
+!     nHeifer_second_dry| number of cows dry after sec lactation           
+!     nHeifer_third_lact| third lactation cows           
+!     nHeifer_third_dry | number of third lactation dry      
+!     nLact             | number of fourth lactation or greater, cows
+!     nDry              | cow number fourth lactation or greater, dry cows
+!     calf_ME           | calf metabolizable energy of feed, kcal/kg       
+!     calf_CP           | calf feed crude protein, %
+!     heifer_ME         | heifer ME of feed, kcal/kg
+!     heifer_CP         | heifer crude protein, % 
+!     lact_CP           | lactating crude protein, %
+!     dry_CP            | dry cow crude protein, %
+!     lact_target       | target lactating herd size   
+!     kCull             | culling target year-over-year, %
+!     kMortality        | mortality rate in herd, %
+!     Breed             |Breed index, 1 if holstein - 0 otherwise             
+!     PKYD              | peak milk yield, kg/d       
+!     MW                | mature weight of lactating animal, kg      
+!     kPreg             | pregnancy rate
+!     MilkFat           | milk fat, %
+!     MilkProtein       | milk protein, %
+!     FCM               | fat corrected milk
+!     Temp              | temperature, C       
+!     RH                | Relative Humidity, %
+!     WS                | wind speed, kph
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+
+!     ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
+!     variable                | definition
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+!     Nmin                    | mineralized Nitrogen in manure, g
+!     Norg                    | organic Nitrogen in manure, g 
+!     Pmin                    | mineralized Phosphorus in manure, g
+!     Porg                    | organic Phosphorus in manure, g
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+
+      ! Set animal numbers to start
+     
+!     age_out          
+!     first_age_out          
+!     second_age_out         
+!     third_age_out          
+!     fourth_age_out         
+!     calves_death, calves_cull          
+!     first_lact_death, first_lact_cull        
+!     second_lact_death, second_lact_cull      
+!     third_lact_death, third_lact_cull        
+!     fourth_lact_death, fourth_lact_cull      
+!     firstCull, secondCull, thirdCull, fourthCull, kHeiferCull        
+
+!     wtCalf           
+!     wtHeifer_first_lact          
+!     wtHeifer_second_lact         
+!     wtHEifer_third_lact          
+!     wtHeifer_first_dry           
+!     wtHeifer_second_dry          
+!     wtHeifer_third_dry           
+!     wtLact           
+!     wtDry      
+!     lact_DMI         
+!     dry_DMI          
+!     calf_DMI         
+!     heifer_first_lact_DMI        
+!     heifer_second_lact_DMI       
+!     heifer_third_lact_DMI        
+!     heifer_first_dry_DMI         
+!     heifer_second_dry_DMI        
+!     heifer_third_dry_DMI         
+!     lact_N           
+!     dry_N      
+!     calf_N           
+!     heifer_first_lact_N          
+!     heifer_second_lact_N         
+!     heifer_third_lact_N          
+!     heifer_first_dry_N           
+!     heifer_second_dry_N          
+!     heifer_third_dry_N           
+!     lact_P           
+!     dry_P      
+!     calf_P           
+!     heifer_first_lact_P          
+!     heifer_second_lact_P         
+!     heifer_third_lact_P          
+!     heifer_first_dry_P           
+!     heifer_second_dry_P          
+!     heifer_third_dry_P           
+! ##########################################
+
+
       integer :: nDay, fDay
 
       ! Set starting animal numbers
@@ -350,13 +450,13 @@
       heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)
 
       total_N = lact_N+dry_N+calf_N+heifer_first_lact_N+heifer_second_lact_N+heifer_third_lact_N+heifer_first_dry_N+heifer_second_dry_N+heifer_third_dry_N
-      total_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
+      total_N_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
       !eghball 2002 
       Pmin = total_P * 0.75
       Porg = total_P * 0.25
-      
-      Nmin = total_N
-      Norg = total_N
+      ! Van Kessel 2002 
+      Nmin = total_N * 0.4
+      Norg = total_N * 0.6
       ! update animal numbers
       ! nCalf = nCalf + born - new_first_lact + 1
       ! nHeifer_first_dry = nHeifer_first_dry + new_first_dry - new_second_lact
@@ -376,7 +476,7 @@
 
 
       !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, nDry
+        print *, Nmin, Norg, Pmin, Porg, 
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
