@@ -349,6 +349,14 @@
       heifer_second_dry_P = cowPexc(heifer_second_dry_DMI)
       heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)
 
+      total_N = lact_N+dry_N+calf_N+heifer_first_lact_N+heifer_second_lact_N+heifer_third_lact_N+heifer_first_dry_N+heifer_second_dry_N+heifer_third_dry_N
+      total_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
+      !eghball 2002 
+      Pmin = total_P * 0.75
+      Porg = total_P * 0.25
+      
+      Nmin = total_N
+      Norg = total_N
       ! update animal numbers
       ! nCalf = nCalf + born - new_first_lact + 1
       ! nHeifer_first_dry = nHeifer_first_dry + new_first_dry - new_second_lact
