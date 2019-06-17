@@ -48,6 +48,10 @@
 !     Porg                    | organic Phosphorus in manure, g
 !     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+!     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
+!     name                    | definition
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 
       ! Set animal numbers to start
      
