@@ -391,24 +391,24 @@
       dry_DMI = dryDMI(wtDry)
 
       !N and P updates
-      lact_N = lactNexc(lact_DMI)
-      dry_N = dryNexc(dry_DMI)
-      calf_N = calfNexc(calf_DMI)
-      heifer_first_lact_N = heiferNexc(heifer_first_lact_DMI)
-      heifer_second_lact_N = heiferNexc(heifer_second_lact_DMI)
-      heifer_third_lact_N = heiferNexc(heifer_third_lact_DMI)
-      heifer_first_dry_N = heiferNexc(heifer_first_dry_DMI)
-      heifer_second_dry_N = heiferNexc(heifer_second_dry_DMI)
-      heifer_third_dry_N = heiferNexc(heifer_third_dry_DMI)
-      lact_P = cowPexc(lact_DMI)
-      dry_P = dryPexc(dry_DMI)
-      calf_P = calfPexc(calf_DMI)
-      heifer_first_lact_P = cowPexc(heifer_first_lact_DMI)
-      heifer_second_lact_P = cowPexc(heifer_second_lact_DMI)
-      heifer_third_lact_P = cowPexc(heifer_third_lact_DMI)
-      heifer_first_dry_P = cowPexc(heifer_first_dry_DMI)
-      heifer_second_dry_P = cowPexc(heifer_second_dry_DMI)
-      heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)
+      lact_N = lactNexc(lact_DMI)*nLact
+      dry_N = dryNexc(dry_DMI)*nDry
+      calf_N = calfNexc(calf_DMI)*nCalf
+      heifer_first_lact_N = heiferNexc(heifer_first_lact_DMI)*nHeifer_first_lact
+      heifer_second_lact_N = heiferNexc(heifer_second_lact_DMI)*nHeifer_second_lact
+      heifer_third_lact_N = heiferNexc(heifer_third_lact_DMI)*nHeifer_third_lact
+      heifer_first_dry_N = heiferNexc(heifer_first_dry_DMI)*nHeifer_first_dry
+      heifer_second_dry_N = heiferNexc(heifer_second_dry_DMI)*nHeifer_second_dry
+      heifer_third_dry_N = heiferNexc(heifer_third_dry_DMI)*nHeifer_third_dry
+      lact_P = cowPexc(lact_DMI)*nLact
+      dry_P = dryPexc(dry_DMI)*nDry
+      calf_P = calfPexc(calf_DMI)*nCalf
+      heifer_first_lact_P = cowPexc(heifer_first_lact_DMI)*nHeifer_first_lact
+      heifer_second_lact_P = cowPexc(heifer_second_lact_DMI)*nHeifer_second_lact
+      heifer_third_lact_P = cowPexc(heifer_third_lact_DMI)*nHeifer_third_lact
+      heifer_first_dry_P = cowPexc(heifer_first_dry_DMI)*nHeifer_first_dry
+      heifer_second_dry_P = cowPexc(heifer_second_dry_DMI)*nHeifer_second_dry
+      heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)*nHeifer_third_dry
 
       total_N = lact_N+dry_N+calf_N+heifer_first_lact_N+heifer_second_lact_N+heifer_third_lact_N+heifer_first_dry_N+heifer_second_dry_N+heifer_third_dry_N
       total_N_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
