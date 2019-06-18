@@ -437,7 +437,7 @@
 
 
       !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, Nmin, Norg, Pmin, Porg, 
+        print *, Nmin, Norg, Pmin, Porg
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
