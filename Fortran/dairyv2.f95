@@ -51,59 +51,16 @@
 !     ~ ~ ~ LOCAL DEFINITIONS ~ ~ ~
 !     name                    | definition
 !     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
-      ! Set animal numbers to start
-     
-!     age_out          
-!     first_age_out          
-!     second_age_out         
-!     third_age_out          
-!     fourth_age_out         
-!     calves_death, calves_cull          
-!     first_lact_death, first_lact_cull        
-!     second_lact_death, second_lact_cull      
-!     third_lact_death, third_lact_cull        
-!     fourth_lact_death, fourth_lact_cull      
-!     firstCull, secondCull, thirdCull, fourthCull, kHeiferCull        
-
-!     wtCalf           
-!     wtHeifer_first_lact          
-!     wtHeifer_second_lact         
-!     wtHEifer_third_lact          
-!     wtHeifer_first_dry           
-!     wtHeifer_second_dry          
-!     wtHeifer_third_dry           
-!     wtLact           
-!     wtDry      
-!     lact_DMI         
-!     dry_DMI          
-!     calf_DMI         
-!     heifer_first_lact_DMI        
-!     heifer_second_lact_DMI       
-!     heifer_third_lact_DMI        
-!     heifer_first_dry_DMI         
-!     heifer_second_dry_DMI        
-!     heifer_third_dry_DMI         
-!     lact_N           
-!     dry_N      
-!     calf_N           
-!     heifer_first_lact_N          
-!     heifer_second_lact_N         
-!     heifer_third_lact_N          
-!     heifer_first_dry_N           
-!     heifer_second_dry_N          
-!     heifer_third_dry_N           
-!     lact_P           
-!     dry_P      
-!     calf_P           
-!     heifer_first_lact_P          
-!     heifer_second_lact_P         
-!     heifer_third_lact_P          
-!     heifer_first_dry_P           
-!     heifer_second_dry_P          
-!     heifer_third_dry_P           
-! ##########################################
+!     firstCull               | cull rate first lactation
+!     secondCull              | cull rate second lact 
+!     thirdCull               | cull rate third lact 
+!     fourthCull              | cull rate fourth lact 
+!     age_out                 | calves becoming first lac
+!     first_age_out           | first lact becoming second 
+!     second_age_out          | second lact becoming third 
+!     third_age_out           | third lact becoming fourth 
+!     fourth_age_out          | fourth lact becoming meat 
+!     ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 
       integer :: nDay, fDay
