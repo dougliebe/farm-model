@@ -26,6 +26,7 @@
 !     lact_target       | target lactating herd size   
 !     kCull             | culling target year-over-year, %
 !     kMortality        | mortality rate in herd, %
+!     milkCow           | Milk yield, kg/d 
 !     Breed             |Breed index, 1 if holstein - 0 otherwise             
 !     PKYD              | peak milk yield, kg/d       
 !     MW                | mature weight of lactating animal, kg      
@@ -134,8 +135,12 @@
       ! Set outputs to 0
       real :: Meat
       real :: Milk
-      real :: N
-      real :: P
+      real :: Nmin
+      real :: Norg
+      real :: Pmin
+      real :: Porg
+      real :: P, N
+      real :: total_N, total_P
 
       ! Set animal numbers to start
       real :: nCalf
@@ -195,6 +200,7 @@
       real :: heifer_first_dry_P
       real :: heifer_second_dry_P
       real :: heifer_third_dry_P
+      real :: fed_calf_P, fed_lact_P, fed_heifer_P, fed_dry_P
 
 
 
@@ -241,16 +247,20 @@
       ! Calf Feeding
       calf_ME = 5.0 !calf ME of diet
       calf_CP = 16.0 !CP, %
+      fed_calf_P = 1.0 !P, %
 
       !Yearling Feed
       heifer_ME = 5.0 !yearling ME of diet
       heifer_CP = 2.5 !CP, %
+      fed_heifer_P = 1.0 !P, %
 
       !Lactating Cow Feed
       lact_CP = 10.0 !CP, %
+      fed_lact_P = 1.0 ! P, %
 
       !Dry Cow Diet
       dry_CP = 10.0 !CP, %
+      fed_dry_P = 1.0 ! P, %
 
 
       !###########################################
@@ -400,18 +410,20 @@
       heifer_first_dry_N = heiferNexc(heifer_first_dry_DMI)*nHeifer_first_dry
       heifer_second_dry_N = heiferNexc(heifer_second_dry_DMI)*nHeifer_second_dry
       heifer_third_dry_N = heiferNexc(heifer_third_dry_DMI)*nHeifer_third_dry
-      lact_P = cowPexc(lact_DMI)*nLact
+      lact_P = cowPexc(lact_DMI, 60.0, fed_lact_P)*nLact
       dry_P = dryPexc(dry_DMI)*nDry
       calf_P = calfPexc(calf_DMI)*nCalf
-      heifer_first_lact_P = cowPexc(heifer_first_lact_DMI)*nHeifer_first_lact
-      heifer_second_lact_P = cowPexc(heifer_second_lact_DMI)*nHeifer_second_lact
-      heifer_third_lact_P = cowPexc(heifer_third_lact_DMI)*nHeifer_third_lact
-      heifer_first_dry_P = cowPexc(heifer_first_dry_DMI)*nHeifer_first_dry
-      heifer_second_dry_P = cowPexc(heifer_second_dry_DMI)*nHeifer_second_dry
-      heifer_third_dry_P = cowPexc(heifer_third_dry_DMI)*nHeifer_third_dry
+      heifer_first_lact_P = cowPexc(heifer_first_lact_DMI, 60*0.6, fed_heifer_P)*nHeifer_first_lact
+      heifer_second_lact_P = cowPexc(heifer_second_lact_DMI, 60*0.75, fed_heifer_P)*nHeifer_second_lact
+      heifer_third_lact_P = cowPexc(heifer_third_lact_DMI, 60*0.9, fed_heifer_P)*nHeifer_third_lact
+      heifer_first_dry_P = cowPexc(heifer_first_dry_DMI, 0.0, fed_heifer_P)*nHeifer_first_dry
+      heifer_second_dry_P = cowPexc(heifer_second_dry_DMI, 0.0, fed_heifer_P)*nHeifer_second_dry
+      heifer_third_dry_P = cowPexc(heifer_third_dry_DMI, 0.0, fed_heifer_P)*nHeifer_third_dry
 
-      total_N = lact_N+dry_N+calf_N+heifer_first_lact_N+heifer_second_lact_N+heifer_third_lact_N+heifer_first_dry_N+heifer_second_dry_N+heifer_third_dry_N
-      total_N_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
+      total_N = lact_N+dry_N+calf_N+heifer_first_lact_N+heifer_second_lact_N+ &
+     & heifer_third_lact_N+heifer_first_dry_N+heifer_second_dry_N+heifer_third_dry_N
+      total_P = lact_P+dry_P+calf_P+heifer_first_lact_P+heifer_second_lact_P+ &
+     & heifer_third_lact_P+heifer_first_dry_P+heifer_second_dry_P+heifer_third_dry_P
       !eghball 2002 
       Pmin = total_P * 0.75
       Porg = total_P * 0.25
@@ -436,8 +448,8 @@
 
 
 
-      !print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
-        print *, Nmin, Norg, Pmin, Porg
+      print *,total_P, total_N
+        ! print *, Nmin, Norg, Pmin, Porg
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
        !!nDay = nDay + 1
@@ -534,24 +546,33 @@
             function calfPexc(DMI) result(Pexc)
                   real, intent(in) :: DMI
                   real :: Pexc
-                  Pexc = ((((calf_P/100)*(DMI*1000))/(DMI*1000)*DMI)*622.03)
+                  Pexc = ((((fed_calf_P/100)*(DMI*1000))/(DMI*1000)*DMI)*622.03)
                   return
             end function calfPexc
 
-            function cowPexc(DMI) result(Pexc)
-                  real, intent(in) :: DMI
+           !  function cowPexc(DMI, wtCow, fed_P) result(Pexc)
+           !        real, intent(in) :: DMI, wtCow, fed_P
+           !        real :: Pexc
+           !        DIM = 305/2.0
+           !        Pexc = ((DMI*fed_P)-(2*(wtCow)/1000)-0.02743* &
+           ! &            exp(((0.05527-0.000075*DIM)*DIM))- &
+           ! &            0.02743*exp(((0.05527-0.000075*(DIM-1))*(DIM-1)))* &
+           ! &            (1.2+4.635*MW**(0.22)*(wtCow)**(-0.22))*ADG/0.96)
+           !        return
+           !  end function cowPexc
+
+           function cowPexc(DMI, milkCow, fed_P) result(Pexc)
+                  real, intent(in) :: DMI, milkCow, fed_P
                   real :: Pexc
-                  Pexc = ((DMI*lact_P)-(2*(wtLact)/1000)-0.02743* &
-           &            exp(((0.05527-0.000075*DIM)*DIM))- &
-           &            0.02743*exp(((0.05527-0.000075*(DIM-1))*(DIM-1)))* &
-           &            (1.2+4.635*MW**(0.22)*(wtLact)**(-0.22))*ADG/0.96)
+                  DIM = 305/2.0
+                  Pexc = 7.5 + ((((fed_P/100)*(DMI*1000))/(DMI*1000)*DMI)*1000*0.78 ) - (milkCow*0.702)
                   return
             end function cowPexc
 
             function dryPexc(DMI) result(Pexc)
                   real, intent(in) :: DMI
                   real :: Pexc
-                  Pexc = (DMI*dry_CP*78.39+51.4)
+                  Pexc = (DMI*fed_dry_P*78.39+51.4)
                   return
             end function dryPexc
       end program dairy_total
