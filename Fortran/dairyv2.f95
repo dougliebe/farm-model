@@ -448,7 +448,7 @@
 
 
 
-      print *, total_N/1000, total_P/1000 !divide by 1000 to get kg/d
+      print *, Nmin/1000, Norg/1000, Pmin/1000, Porg/1000 !divide by 1000 to get kg/d
         ! print *, Nmin, Norg, Pmin, Porg
       end do
      ! print *,nDay, Porg,Nmin,Pmin,cumManure,manureStore
