@@ -75,6 +75,10 @@
 
       real :: new_pullets
       real :: new_layers
+      real :: culling
+      real :: molting
+      integer :: t
+      
 
 ! ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
